@@ -1,18 +1,24 @@
-const { Keystone } = require('@keystone-alpha/keystone');
-const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
-const { Text, Checkbox, Password } = require('@keystone-alpha/fields');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
-const { KnexAdapter: Adapter } = require('@keystone-alpha/adapter-knex');
+const { Keystone } = require('@keystonejs/keystone');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+const { Text, Checkbox, Password } = require('@keystonejs/fields');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const PROJECT_NAME = "MakeID";
 
 
 const UsersSchema = require('./lists/Users.js')
+const CertsSchema = require('./lists/Certs.js')
+const AreasSchema = require('./lists/Areas.js')
+const ToolsSchema = require('./lists/Tools.js')
 
 const keystone = new Keystone({
   name: PROJECT_NAME,
-  adapter: new Adapter(),
+  adapter: new MongooseAdapter({
+
+    
+  }),
 });
 
 // Access control functions
@@ -30,7 +36,13 @@ const userIsAdminOrOwner = auth => {
 };
 const access = { userIsAdmin, userOwnsItem, userIsAdminOrOwner };
 
+keystone.createList('Cert', CertsSchema);
+keystone.createList('Tool', ToolsSchema);
+keystone.createList('Area', AreasSchema);
 keystone.createList('User', UsersSchema);
+
+
+
 
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
@@ -49,7 +61,7 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     // To create an initial user you can temporarily remove the authStrategy below
-    new AdminUIApp({ enableDefaultRoute: true, authStrategy }),
-    //new AdminUIApp({ enableDefaultRoute: true }),
+    //new AdminUIApp({ enableDefaultRoute: true, authStrategy }),
+    new AdminUIApp({ enableDefaultRoute: true }),
   ],
 };
