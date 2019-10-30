@@ -3,7 +3,7 @@ const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Checkbox, Password } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { KnexAdapter } = require('@keystonejs/adapter-knex');
 
 const PROJECT_NAME = "MakeID";
 
@@ -15,8 +15,11 @@ const ToolsSchema = require('./lists/Tools.js')
 
 const keystone = new Keystone({
   name: PROJECT_NAME,
-  adapter: new MongooseAdapter({
-
+  adapter: new KnexAdapter({
+    knexOptions: {
+      client: 'postgres',
+      connection: 'postgres://keystone5:k3yst0n3@localhost:5432/make_id',
+    },
     
   }),
 });

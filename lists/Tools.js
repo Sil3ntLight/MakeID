@@ -21,7 +21,12 @@ module.exports = {
             label: 'Area Tool is in',
             type: Relationship,
             ref: 'Area',
-        }
+        },
+        additionalCert: {
+            label: 'Additional Certification',
+            type: Relationship,
+            ref: 'Cert',
+        },
     },
         
     
